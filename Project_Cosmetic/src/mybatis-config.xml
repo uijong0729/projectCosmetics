@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- mybatis에 쓸 config Doctype mybaits환경설정-->
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+ <!-- mybatis 설정을 할 수 있다 접속경로, 별칭지정(properties밑에 environments위에)--> 
+  <configuration>
+  
+  <!-- 순서에 엄격하므로 주의 -->
+  <!-- db.properties불러오는 태그 -->
+  <!-- data source의 property 의 value값을 따로 file로 뺐다. -->
+  <properties resource="db.properties" />  	<!-- resource = ""는 경로를 적는부분. 최상위 경로로 쓰면 상위경로를 쓸 필요가 없어짐 -->
+  			
+  					 <!-- 약칭 설정하기 -->
+				  <typeAliases>
+				  	<typeAlias type = "cos.vo.Cosmetic" alias="cosmetic"/>
+				  	<typeAlias type = "cos.vo.Customer" alias="customer"/>
+				  	<typeAlias type = "cos.vo.Review" alias="review"/>
+				  	<typeAlias type = "cos.vo.Favorite" alias="favorite"/>
+				  </typeAliases>
+  
+	<!-- default 접속 정보 설정 -->  
+	<environments default="development">
+	
+		<environment id="development">
+		 
+		 <!-- /를 안에 넣으면 태그를 닫지 않아도 단독으로 태그(<>)를 사용 할 수 있다 -->
+		 <transactionManager type="JDBC"/>
+		 
+			 <dataSource type="POOLED">	<!-- connection pool : 동시에 몇개까지 접근을 허용할 건지 설정. 커넥션 설정을 오라클에게 맡기겠다 -->
+			 	
+			 	<!-- 속성에 값을 전달 하고 싶을 때 쓰는 태그 -->
+			 	<!-- 분리시켜서 db.properties 파일에서 가져오도록 했다. -->
+			 	<!-- 데이터 변동이 있을 경우 db.properties파일에서 수정하면 된다. -->
+			 	<property name="driver" value="${driver}"/> 
+			 	<property name="url" value="${url}"/>
+			 	<property name="username" value="${username}"/>
+			 	<property name="password" value="${password}"/>
+			 		
+			 	
+			 </dataSource>
+		 
+		</environment>
+	
+	</environments>  
+	
+	
+	<!-- import하기 전에 mapper파일 만들기 -->
+	<!-- sql이 선언된 mapper파일 import -->
+  	
+  	<mappers>
+  	
+  	<!-- 파일가져오는 경로 언급 (자기 위치 기준으로 찾아가기) -->
+  	<mapper resource="mappers/CosMapper.xml" />
+  	
+  	
+  	</mappers>
+  
+  
+  </configuration>
+  
+  
+  
+  
+  
+  

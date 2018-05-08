@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- mybatis-config에 있는 DOCtype을 그대로 쓰면 안됨 -->
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <!-- -->
+<mapper namespace= "cos.service.CosMapper">
+
+
+ 
+	<insert id="insertCosmetic" parameterType="cos.vo.Cosmetic">
+	
+	<!-- 화장품 추가 -->
+	insert into Cosmetic( 
+	cosNumber
+	,cosName
+	,cosPrice
+	,cosBrand
+	,cosContent
+	,cosSkinType
+	,cosType
+	)
+	values(
+	cos_seq.nextval
+	, #{cosName}
+	, #{cosPrice}
+	, #{cosBrand}
+	, #{cosContent}
+	, #{cosSkinType}
+	, #{cosType}
+	)
+	
+	</insert>	
+	
+	<!-- 화장품삭제 -->
+	<delete id="deleteCosmetic" parameterType="cosmetic">
+	
+	delete cosmetic
+	where cosNumber = #{cosNumber}	
+	</delete>
+	
+	
+	<!-- 화장품 수정 -->
+	<update id="updateCosmetic" parameterType="cosmetic">
+	update cosmetic
+	set cosPrice = #{cosPrice}
+	, cosContent = #{cosContent}
+	where cosNumber = #{cosNumber}
+	
+	</update>
+	
+	<update id="updateGrade" parameterType="cosmetic">
+	update cosmetic
+	set cosGrade = #{cosGrade}
+	where cosNumber = #{cosNumber}	
+	
+	</update>
+	
+	
+	<!-- 화장품 리스트 출력 -->
+	<select id="getCosmeticList" resultType="cosmetic">
+	select * 
+	from Cosmetic
+	
+	</select>
+	
+	
+	<!-- 화장품 1개 출력 -->
+	<select id="getCosmetic" resultType="cosmetic">
+	select *
+	from cosmetic
+	where cosNumber = #{cosNumber}
+	
+	
+	</select>
+	
+	
+		
+	
+	<!-- 회원 등록 -->
+	<insert id="insertCustomer" parameterType="cos.vo.Customer">  
+	INSERT INTO Customer(id, pw, cusAge, cusGender)
+	VALUES ( #{id}, #{pw}, #{cusAge}, #{cusGender})
+	</insert>
+	
+	<!-- 회원 비밀변호 변경 -->
+	<update id="updateCustomer" parameterType="cos.vo.Customer">
+	update customer 
+	set pw = #{pw}
+	where id = #{id}
+	
+	</update>
+	
+	<!-- 회원 피부 변경 -->
+	<update id="updateSkin" parameterType="customer">
+	update customer
+	set cusSkinType = #{cusSkinType}
+	where id = #{id}
+	
+	</update>
+	
+	
+	<!-- 회원 정보출력 -->
+	<select id="getCustomerInfo" resultType="customer">
+		select *
+		from Customer
+		where id = #{id}	
+	</select>
+	
+	<!-- 회원 리스트 출력 -->
+	<select id="getCustomerList" resultType="customer">
+	select * 
+	from Customer
+	
+	</select>
+	
+	
+	<!-- 회원 탈퇴 -->
+	<delete id="deleteCustomer" parameterType="map">
+	delete customer
+	where id = #{id} and pw = #{pw} 
+	
+	</delete>
+	
+	
+	
+	
+	
+	<!-- 리뷰 추가 -->
+	<insert id="insertReview" parameterType="cos.vo.Review">
+		
+	insert into review(reviewNum, cosNum, id, content, cosGrade)
+	values (review_seq.nextval, #{cosNum}, #{id}, #{content}, #{cosGrade})
+	
+	</insert>
+	
+	<!-- 리뷰 삭제 -->
+		<delete id="deleteReview">
+		
+		delete from review
+		where reviewNum = #{reviewNum}
+		
+		</delete>
+	
+	<!-- 리뷰 수정 -->
+		<update id="updateReview" parameterType="review">
+		
+		update review
+		set content = #{content}
+		, cosGrade = #{cosGrade}
+		, indate = sysdate
+		where reviewNum = #{reviewNum}
+		
+		</update>
+	
+	<!-- 리뷰 불러오기 -->
+	<select id="getReview" resultType="review">
+	select *
+	from review
+	where cosNum = #{cosNum}
+	
+	</select>
+	
+	<!-- 찜 추가 -->	
+	<insert id="insertFavorite" parameterType="favorite">
+	
+	insert into favorite values (#{id}, #{cosNumber})
+	
+	</insert>
+	
+	<!-- 찜 부르기
+	<select id="getMyFavorite" parameterType="string" 
+	resultType="cosmetic">
+	select cos.cosnumber, cos.cosname, cos.cosprice, cos.cosgrade, cos.cosbrand, cos.cosskintype, cos.coscontent, cos.costype
+	from favorite f, cosmetic cos
+	where f.cosnumber = cos.cosnumber
+	and f.id = #{id}
+	</select>
+	-->
+	
+	<select id="printFavorite" parameterType="string" resultType="cosmetic">
+	select c.cosnumber, c.cosname, c.cosprice, c.cosgrade, c.cosbrand, c.cosskintype, c.coscontent, c.costype
+	from favorite f, cosmetic c
+	where f.cosnumber = c.cosnumber
+	and f.id = #{id}
+	</select>
+	
+	<!-- 찜 삭제-->
+	<delete id="deleteFavorite" parameterType="map">
+	delete from favorite
+	where cosNumber = #{cosNumber} and id = #{id}
+	
+	</delete>
+	
+	<!-- 탈퇴시 찜목록 전체삭제 -->
+	<delete id="deleteUserFavorite" parameterType="String">
+	delete favorite
+	where id = #{id}
+	
+	</delete>
+	
+	<!-- 찜에서 상품의 평균값 가져오기 -->
+	<select id="getGradeAvg" parameterType="Integer" resultType="Double">
+	select AVG(r.cosGrade) 
+	from cosmetic c, review r
+	where r.cosNum = #{cosNumber}
+	</select>
+	
+	
+</mapper>
+
+
